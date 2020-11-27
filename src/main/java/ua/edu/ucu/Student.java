@@ -38,7 +38,14 @@ class Student {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj.getClass() == getClass()) return toString().compareTo(obj.toString()) == 0;
+        if (obj != null && obj.getClass() == getClass()) {
+            return toString().compareTo(obj.toString()) == 0;
+        }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.charAt(0) + 10*surname.charAt(0) + (int)(GPA*10000) + year*1000;
     }
 }
