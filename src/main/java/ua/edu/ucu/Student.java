@@ -46,6 +46,7 @@ class Student {
 
     @Override
     public int hashCode() {
-        return name.charAt(0) + 10*surname.charAt(0) + (int)(GPA*10000) + year*1000;
+        return name.charAt(0) + 10*surname.charAt(0) +
+                (int) (GPA*10000) + year*1000;
     }
 }
