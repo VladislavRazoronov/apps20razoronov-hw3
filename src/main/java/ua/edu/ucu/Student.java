@@ -3,10 +3,10 @@ package ua.edu.ucu;
 
 class Student {
 
-    private double GPA;
-    private int year;
-    private String name;
-    private String surname;
+    private final double GPA;
+    private final int year;
+    private final String name;
+    private final String surname;
 
     public Student(String name, String surname, double GPA, int year) {
         this.GPA = GPA;
@@ -36,4 +36,9 @@ class Student {
         return "Student{name=" + name + ", surname=" + surname + ", " + "GPA=" + GPA + ", year=" + year + '}';
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj.getClass() == getClass()) return toString().compareTo(obj.toString()) == 0;
+        return false;
+    }
 }

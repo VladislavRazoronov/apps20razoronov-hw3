@@ -4,12 +4,13 @@ import java.util.Arrays;
 import ua.edu.ucu.functions.MyComparator;
 import ua.edu.ucu.functions.MyFunction;
 import ua.edu.ucu.functions.MyPredicate;
+import ua.edu.ucu.smartarr.*;
 
 public class SmartArrayApp {
 
     public static Integer[]
-            filterPositiveIntegersSortAndMultiplyBy2(Integer[] integers) {
-                
+    filterPositiveIntegersSortAndMultiplyBy2(Integer[] integers) {
+
         MyPredicate pr = new MyPredicate() {
             @Override
             public boolean test(Object t) {
@@ -39,21 +40,55 @@ public class SmartArrayApp {
         sa = new MapDecorator(sa, func); // Result: [2, 4, 6]
 
         // Alternative
-//        sa = new MapDecorator(
-//                    new SortDecorator(
-//                        new FilterDecorator(sa, pr),
-//                    cmp),
-//                func);
+        //        sa = new MapDecorator(
+        //                    new SortDecorator(
+        //                        new FilterDecorator(sa, pr),
+        //                    cmp),
+        //                func);
         Object[] result = sa.toArray();
         return Arrays.copyOf(result, result.length, Integer[].class);
     }
 
     public static String[]
-            findDistinctStudentNamesFrom2ndYearWithGPAgt4AndOrderedBySurname(Student[] students) {
+    findDistinctStudentNamesFrom2ndYearWithGPAgt4AndOrderedBySurname(Student[] students) {
 
-        // Hint: to convert Object[] to String[] - use the following code
-        //Object[] result = studentSmartArray.toArray();
-        //return Arrays.copyOf(result, result.length, String[].class);
-        return null;
+        MyPredicate yearPr = new MyPredicate() {
+            @Override
+            public boolean test(Object t) {
+                return ((Student) t).getYear() == 2;
+            }
+        };
+
+        MyPredicate gpaPr = new MyPredicate() {
+            @Override
+            public boolean test(Object t) {
+                return ((Student) t).getGPA() >= 4;
+            }
+        };
+
+        MyComparator surCmp = new MyComparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return ((Student) o1).getSurname().compareTo(((Student) o2).getSurname());
+            }
+        };
+
+        MyFunction makeName = new MyFunction() {
+            @Override
+            public Object apply(Object t) {
+                return ((Student) t).getSurname() + " " + ((Student) t).getName();
+            }
+        };
+
+        SmartArray studentSmartArray = new BaseArray(students);
+
+        studentSmartArray = new SortDecorator(studentSmartArray, surCmp);
+        studentSmartArray = new FilterDecorator(studentSmartArray, gpaPr);
+        studentSmartArray = new FilterDecorator(studentSmartArray, yearPr);
+        studentSmartArray = new DistinctDecorator(studentSmartArray);
+        studentSmartArray = new MapDecorator(studentSmartArray, makeName);
+
+        Object[] result = studentSmartArray.toArray();
+        return Arrays.copyOf(result, result.length, String[].class);
     }
 }
